@@ -37,7 +37,7 @@ with connection.cursor() as cursor:
             released DATE,
             tba BOOLEAN,
             updated DATETIME,
-            website VARCHAR(255),
+            website VARCHAR(500),
             rating FLOAT,
             rating_top INT,
             playtime INT,
@@ -47,7 +47,7 @@ with connection.cursor() as cursor:
             game_series_count INT,
             reviews_count INT,
             platforms VARCHAR(255),
-            developers VARCHAR(3000),
+            developers VARCHAR(2000),
             genres VARCHAR(255),
             publishers VARCHAR(255),
             esrb_rating VARCHAR(255),
@@ -62,27 +62,30 @@ with connection.cursor() as cursor:
 
 # Insert data from the CSV file with progress bar
 with open('game_info.csv', newline='') as csvfile:
-    reader = csv.DictReader(csvfile)
+    reader = csv.reader(csvfile)
+    header = next(reader)  # Skip the header row
     total_rows = sum(1 for row in reader)
     csvfile.seek(0)  # Reset file pointer
-    reader = csv.DictReader(csvfile)
+    next(reader)  # Skip the header row again
     with tqdm(total=total_rows) as pbar:
+        tba_index = header.index('tba')  # Get the index of 'tba' column
+
         for row in reader:
-            values = []
-            for key, value in row.items():
-                if value == '':
-                    values.append('NULL')
-                elif key == 'tba':
-                    values.append(str(int(value.lower() == 'true')))
-                else:
-                    values.append("'" + value.replace("'", "''") + "'")
-            sql = "INSERT INTO games (" + ', '.join(row.keys()) + ") VALUES (" + ', '.join(values) + ")"
-            # print(sql)  # Debugging line
+            row = [None if value == '' else value for value in row]
+
+            # Convert 'True'/'False' string to 1/0 for the 'tba' column
+            if row[tba_index].lower() == 'true':
+                row[tba_index] = 1
+            else:
+                row[tba_index] = 0
+
+            sql = "INSERT INTO games (" + ', '.join(header) + ") VALUES (" + ', '.join(['%s'] * len(header)) + ")"
             with connection.cursor() as cursor:
-                cursor.execute(sql)
+                # print(f"SQL Query: {sql}\nRow: {row}\nNumber of placeholders: {sql.count('%s')}, Number of values: {len(row)}\n")
+                cursor.execute(sql, tuple(row))
+
             connection.commit()
             pbar.update(1)
 
 # Close the connection
 connection.close()
-
