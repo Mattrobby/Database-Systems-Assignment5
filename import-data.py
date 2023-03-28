@@ -2,6 +2,7 @@ import os
 import csv
 import pymysql.cursors
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 # Load environment variables from .env file
 load_dotenv()
@@ -46,7 +47,7 @@ with connection.cursor() as cursor:
             game_series_count INT,
             reviews_count INT,
             platforms VARCHAR(255),
-            developers VARCHAR(255),
+            developers VARCHAR(3000),
             genres VARCHAR(255),
             publishers VARCHAR(255),
             esrb_rating VARCHAR(255),
@@ -59,23 +60,29 @@ with connection.cursor() as cursor:
         )
     """)
 
-# Insert data from the CSV file
+# Insert data from the CSV file with progress bar
 with open('game_info.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
-    for row in reader:
-        values = []
-        for key, value in row.items():
-            if value == '':
-                values.append('NULL')
-            elif key == 'tba':
-                values.append(str(int(value.lower() == 'true')))
-            else:
-                values.append("'" + value.replace("'", "''") + "'")
-        sql = "INSERT INTO games (" + ', '.join(row.keys()) + ") VALUES (" + ', '.join(values) + ")"
-        print(sql)  # Debugging line
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-        connection.commit()
+    total_rows = sum(1 for row in reader)
+    csvfile.seek(0)  # Reset file pointer
+    reader = csv.DictReader(csvfile)
+    with tqdm(total=total_rows) as pbar:
+        for row in reader:
+            values = []
+            for key, value in row.items():
+                if value == '':
+                    values.append('NULL')
+                elif key == 'tba':
+                    values.append(str(int(value.lower() == 'true')))
+                else:
+                    values.append("'" + value.replace("'", "''") + "'")
+            sql = "INSERT INTO games (" + ', '.join(row.keys()) + ") VALUES (" + ', '.join(values) + ")"
+            # print(sql)  # Debugging line
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+            connection.commit()
+            pbar.update(1)
 
 # Close the connection
 connection.close()
+
