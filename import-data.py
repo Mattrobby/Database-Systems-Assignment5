@@ -49,7 +49,7 @@ with connection.cursor() as cursor:
             platforms VARCHAR(255),
             developers VARCHAR(2000),
             genres VARCHAR(255),
-            publishers VARCHAR(255),
+            publishers VARCHAR(500),
             esrb_rating VARCHAR(255),
             added_status_yet INT,
             added_status_owned INT,
