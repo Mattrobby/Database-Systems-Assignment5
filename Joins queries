@@ -1,0 +1,20 @@
+SELECT games.name, platforms.name 
+FROM games 
+JOIN game_platforms ON games.id = game_platforms.game_id 
+JOIN platforms ON game_platforms.platform_id = platforms.id;
+
+SELECT games.name, platforms.name 
+FROM games 
+JOIN game_platforms ON games.id = game_platforms.game_id 
+JOIN platforms ON game_platforms.platform_id = platforms.id;
+
+SELECT games.name, genres.name 
+FROM games 
+JOIN game_genres ON games.id = game_genres.game_id 
+JOIN genres ON game_genres.genre_id = genres.id;
+
+SELECT games.name, publishers.name 
+FROM games 
+JOIN game_publishers ON games.id = game_publishers.game_id 
+JOIN publishers ON game_publishers.publisher_id = publishers.id;
+
