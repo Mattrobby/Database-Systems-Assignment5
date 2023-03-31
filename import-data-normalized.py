@@ -152,8 +152,12 @@ def insert_or_get_id(table, name, cursor):
         cursor.execute(f"INSERT INTO {table} (name) VALUES (%s)", (name,))
         return cursor.lastrowid
 
+def relationship_exists(table, game_id, related_id, related_column, cursor):
+    cursor.execute(f"SELECT 1 FROM {table} WHERE game_id = %s AND {related_column} = %s", (game_id, related_id))
+    return cursor.fetchone() is not None
+
 # Insert data from the CSV file with progress bar
-with open('game_info-2000.csv', newline='') as csvfile:
+with open('game_info.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     header = next(reader)  # Skip the header row
     total_rows = sum(1 for row in reader)
@@ -218,22 +222,23 @@ with open('game_info-2000.csv', newline='') as csvfile:
 
                 for platform in platforms:
                     platform_id = insert_or_get_id('platforms', platform, cursor)
-                    cursor.execute("INSERT INTO game_platforms (game_id, platform_id) VALUES (%s, %s)",
-                                   (game_id, platform_id))
+                    if not relationship_exists("game_platforms", game_id, platform_id, "platform_id", cursor):
+                        cursor.execute("INSERT INTO game_platforms (game_id, platform_id) VALUES (%s, %s)", (game_id, platform_id))
 
                 for developer in developers:
                     developer_id = insert_or_get_id('developers', developer, cursor)
-                    cursor.execute("INSERT INTO game_developers (game_id, developer_id) VALUES (%s, %s)",
-                                   (game_id, developer_id))
+                    if not relationship_exists("game_developers", game_id, developer_id, "developer_id", cursor):
+                        cursor.execute("INSERT INTO game_developers (game_id, developer_id) VALUES (%s, %s)", (game_id, developer_id))
 
                 for genre in genres:
                     genre_id = insert_or_get_id('genres', genre, cursor)
-                    cursor.execute("INSERT INTO game_genres (game_id, genre_id) VALUES (%s, %s)", (game_id, genre_id))
+                    if not relationship_exists("game_genres", game_id, genre_id, "genre_id", cursor):
+                        cursor.execute("INSERT INTO game_genres (game_id, genre_id) VALUES (%s, %s)", (game_id, genre_id))
 
                 for publisher in publishers:
                     publisher_id = insert_or_get_id('publishers', publisher, cursor)
-                    cursor.execute("INSERT INTO game_publishers (game_id, publisher_id) VALUES (%s, %s)",
-                                   (game_id, publisher_id))
+                    if not relationship_exists("game_publishers", game_id, publisher_id, "publisher_id", cursor):
+                        cursor.execute("INSERT INTO game_publishers (game_id, publisher_id) VALUES (%s, %s)", (game_id, publisher_id))
 
                 connection.commit()
                 pbar.update(1)
