@@ -64,35 +64,40 @@ with connection.cursor() as cursor:
             added_status_toplay INT,
             added_status_dropped INT,
             added_status_playing INT
-        )
+        )CHARACTER SET utf8mb4 COLLATE 
+    utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
         CREATE TABLE platforms (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) UNIQUE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
         CREATE TABLE developers (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) UNIQUE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
         CREATE TABLE genres (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) UNIQUE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
         CREATE TABLE publishers (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) UNIQUE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
@@ -102,7 +107,8 @@ with connection.cursor() as cursor:
             PRIMARY KEY (game_id, platform_id),
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
             FOREIGN KEY (platform_id) REFERENCES platforms(id) ON DELETE CASCADE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
     
     cursor.execute("""
@@ -112,7 +118,8 @@ with connection.cursor() as cursor:
             PRIMARY KEY (game_id, developer_id),
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
             FOREIGN KEY (developer_id) REFERENCES developers(id) ON DELETE CASCADE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
@@ -122,7 +129,8 @@ with connection.cursor() as cursor:
             PRIMARY KEY (game_id, genre_id),
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
             FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
 
     cursor.execute("""
@@ -132,7 +140,8 @@ with connection.cursor() as cursor:
             PRIMARY KEY (game_id, publisher_id),
             FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
             FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE
-        )
+        )CHARACTER SET utf8mb4 COLLATE
+            utf8mb4_unicode_ci
     """)
     
 def insert_or_get_id(table, name, cursor):
