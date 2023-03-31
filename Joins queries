@@ -18,3 +18,4 @@ FROM games
 JOIN game_publishers ON games.id = game_publishers.game_id 
 JOIN publishers ON game_publishers.publisher_id = publishers.id;
 
+hasn't been tested yet
