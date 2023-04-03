@@ -1,0 +1,75 @@
+erDiagram
+  games ||--|| game_platforms : has
+  games ||--|| game_developers : has
+  games ||--|| game_genres : has
+  games ||--|| game_publishers : has
+  platforms ||--|| game_platforms : used_by
+  developers ||--|| game_developers : created_by
+  genres ||--|| game_genres : belongs_to
+  publishers ||--|| game_publishers : published_by
+
+  games {
+    id INT PK
+    slug VARCHAR(255)
+    name VARCHAR(255)
+    metacritic VARCHAR(255)
+    released DATE
+    tba BOOLEAN
+    updated DATETIME
+    website VARCHAR(500)
+    rating FLOAT
+    rating_top INT
+    playtime INT
+    achievements_count INT
+    ratings_count INT
+    suggestions_count INT
+    game_series_count INT
+    reviews_count INT
+    esrb_rating VARCHAR(255)
+    added_status_yet INT
+    added_status_owned INT
+    added_status_beaten INT
+    added_status_toplay INT
+    added_status_dropped INT
+    added_status_playing INT
+  }
+
+  platforms {
+    id INT PK AUTO_INCREMENT
+    name VARCHAR(255) UNIQUE
+  }
+
+  developers {
+    id INT PK AUTO_INCREMENT
+    name VARCHAR(255) UNIQUE
+}
+
+genres {
+    id INT PK AUTO_INCREMENT
+    name VARCHAR(255) UNIQUE
+}
+
+publishers {
+    id INT PK AUTO_INCREMENT
+    name VARCHAR(255) UNIQUE
+}
+
+game_platforms {
+    game_id INT PK, FK
+    platform_id INT PK, FK
+}
+
+game_developers {
+    game_id INT PK, FK
+    developer_id INT PK, FK
+}
+
+game_genres {
+    game_id INT PK, FK
+    genre_id INT PK, FK
+}
+
+game_publishers {
+    game_id INT PK, FK
+    publisher_id INT PK, FK
+}
