@@ -1,7 +1,7 @@
 -- Drops stored procedures if they exist
 DROP PROCEDURE IF EXISTS get_games_by_genre;
 DROP PROCEDURE IF EXISTS get_average_rating_by_developer;
-DROP PROCEDURE IF EXISTS get_oldest_games()
+DROP PROCEDURE IF EXISTS get_oldest_games();
 
 
 -- Create a stored procedure for retrieving the total number of games by each genre
