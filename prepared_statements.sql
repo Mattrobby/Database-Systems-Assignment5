@@ -1,6 +1,7 @@
 -- Drops stored procedures if they exist
 DROP PROCEDURE IF EXISTS get_games_by_genre;
 DROP PROCEDURE IF EXISTS get_average_rating_by_developer;
+DROP PROCEDURE IF EXISTS get_oldest_games()
 
 
 -- Create a stored procedure for retrieving the total number of games by each genre
@@ -30,3 +31,19 @@ BEGIN
 END;;
 DELIMITER ;
 
+DELIMITER;;
+CREATE PROCEDURE get_oldest_games()
+BEGIN
+        SELECT g.name AS game_name, g.released, p.name AS publisher_name, g.rating
+        FROM (
+                    SELECT game_id, MAX(publisher_id) AS publisher_id
+                    FROM game_publishers
+                    GROUP BY game_id
+        ) gp
+        INNER JOIN games g ON gp.game_id = g.id
+        INNER JOIN publishers p ON gp.publisher_id = p.id
+        WHERE g.released IS NOT NULL
+        ORDER BY g.released ASC
+        LIMIT 10;
+End;;
+DELIMITER;;
