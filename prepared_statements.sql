@@ -1,8 +1,8 @@
 -- Drops stored procedures if they exist
 DROP PROCEDURE IF EXISTS get_games_by_genre;
 DROP PROCEDURE IF EXISTS get_average_rating_by_developer;
-DROP PROCEDURE IF EXISTS get_oldest_games();
-
+DROP PROCEDURE IF EXISTS get_oldest_games;
+DROP PROCEDURE IF EXISTS get_top_rated_games;
 
 -- Create a stored procedure for retrieving the total number of games by each genre
 DELIMITER ;;
@@ -31,6 +31,8 @@ BEGIN
 END;;
 DELIMITER ;
 
+-- Create a stored procedure for retrieving  to oldest gmaes 
+
 DELIMITER;;
 CREATE PROCEDURE get_oldest_games()
 BEGIN
@@ -51,7 +53,7 @@ DELIMITER;;
 -- Create a stored procedure for top ten games by ratings
 
 DELIMITER //
-CREATE PROCEDURE top_rated_games()
+CREATE PROCEDURE get_top_rated_games()
 BEGIN
     SELECT g.name, g.rating, p.name AS platform, d.name AS developer, pu.name AS publisher, GROUP_CONCAT(DISTINCT g2.name SEPARATOR ', ') AS genre
     FROM games g
