@@ -47,3 +47,25 @@ BEGIN
         LIMIT 10;
 End;;
 DELIMITER;;
+
+-- Create a stored procedure for top ten games by ratings
+
+DELIMITER //
+CREATE PROCEDURE top_rated_games()
+BEGIN
+    SELECT g.name, g.rating, p.name AS platform, d.name AS developer, pu.name AS publisher, GROUP_CONCAT(DISTINCT g2.name SEPARATOR ', ') AS genre
+    FROM games g
+    LEFT JOIN game_platforms gp ON g.id = gp.game_id
+    LEFT JOIN platforms p ON gp.platform_id = p.id
+    LEFT JOIN game_developers gd ON g.id = gd.game_id
+    LEFT JOIN developers d ON gd.developer_id = d.id
+    LEFT JOIN game_publishers gpu ON g.id = gpu.game_id
+    LEFT JOIN publishers pu ON gpu.publisher_id = pu.id
+    LEFT JOIN game_genres gg ON g.id = gg.game_id
+    LEFT JOIN genres g2 ON gg.genre_id = g2.id
+    GROUP BY g.name
+    ORDER BY g.rating DESC
+    LIMIT 10;
+END //
+DELIMITER ;
+
