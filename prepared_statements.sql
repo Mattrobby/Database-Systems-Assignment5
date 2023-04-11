@@ -1,11 +1,12 @@
 -- Drops stored procedures if they exist
 DROP PROCEDURE IF EXISTS get_games_by_genre;
 DROP PROCEDURE IF EXISTS get_average_rating_by_developer;
-DROP PROCEDURE IF EXISTS get_oldest_games();
+DROP PROCEDURE IF EXISTS get_oldest_games;
+DROP PROCEDURE IF EXISTS top_rated_games;
 
 
 -- Create a stored procedure for retrieving the total number of games by each genre
-DELIMITER ;;
+DELIMITER $$
 CREATE PROCEDURE get_games_by_genre()
 BEGIN
     SELECT genres.name as genre_name, COUNT(games.id) as game_count
@@ -14,11 +15,11 @@ BEGIN
     JOIN genres ON game_genres.genre_id = genres.id
     GROUP BY genres.name
     ORDER BY game_count DESC;
-END;;
+END $$
 DELIMITER ;
 
 -- Create a stored procedure for retrieving the average rating of games for the first 100 developers
-DELIMITER ;;
+DELIMITER $$
 CREATE PROCEDURE get_average_rating_by_developer()
 BEGIN
     SELECT developers.name as developer_name, AVG(games.rating) as average_rating
@@ -28,10 +29,10 @@ BEGIN
     GROUP BY developers.name
     ORDER BY average_rating DESC
     LIMIT 100;
-END;;
+END $$
 DELIMITER ;
 
-DELIMITER;;
+DELIMITER $$
 CREATE PROCEDURE get_oldest_games()
 BEGIN
         SELECT g.name AS game_name, g.released, p.name AS publisher_name, g.rating
@@ -45,12 +46,11 @@ BEGIN
         WHERE g.released IS NOT NULL
         ORDER BY g.released ASC
         LIMIT 10;
-End;;
-DELIMITER;;
+End $$
+DELIMITER ;
 
 -- Create a stored procedure for top ten games by ratings
-
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE top_rated_games()
 BEGIN
     SELECT g.name, g.rating, p.name AS platform, d.name AS developer, pu.name AS publisher, GROUP_CONCAT(DISTINCT g2.name SEPARATOR ', ') AS genre
@@ -66,6 +66,6 @@ BEGIN
     GROUP BY g.name
     ORDER BY g.rating DESC
     LIMIT 10;
-END //
+END $$
 DELIMITER ;
 
